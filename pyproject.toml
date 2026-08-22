@@ -1,0 +1,15 @@
+[project]
+name = "softlint"
+version = "0.1.0"
+description = "Constraint-softening lexical linter for agent rule files (CLAUDE.md / AGENTS.md / SKILL.md)"
+requires-python = ">=3.9"
+
+[project.scripts]
+softlint = "softlint.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["softlint"]
