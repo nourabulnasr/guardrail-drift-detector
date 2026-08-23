@@ -1,23 +1,23 @@
-"""Command-line entry point for softlint.
+"""Command-line entry point for guardrail-drift-detector.
 
 Three ways to use it:
 
-  softlint diff OLD_FILE NEW_FILE
+  guardrail-drift-detector diff OLD_FILE NEW_FILE
       Compare two files on disk directly. No git required. This is the
       30-second demo path.
 
-  softlint check FILE [--staged]
+  guardrail-drift-detector check FILE [--staged]
       Compare a file's git HEAD version against its current working-tree
       (or, with --staged, index/staged) version. Must be run inside a git
       repo.
 
-  softlint check-staged [PATTERN ...]
+  guardrail-drift-detector check-staged [PATTERN ...]
       Find all staged files matching the given glob patterns (default:
       CLAUDE.md, AGENTS.md, SKILL.md, and *SKILL.md at any depth) that
       already existed at HEAD, and run `check --staged` on each. This is
       what the pre-commit hook calls.
 
-  softlint install-hook
+  guardrail-drift-detector install-hook
       Write a pre-commit hook into the current repo's .git/hooks/ that
       runs `check-staged` and blocks the commit if it finds violations.
 
@@ -38,10 +38,10 @@ from .core import find_softenings
 DEFAULT_PATTERNS = ["CLAUDE.md", "AGENTS.md", "SKILL.md", "*SKILL.md"]
 
 PRE_COMMIT_HOOK = """#!/bin/sh
-# Installed by softlint (constraint-softening-linter).
+# Installed by guardrail-drift-detector.
 # Blocks commits that silently soften constraint language in
 # CLAUDE.md / AGENTS.md / SKILL.md files.
-python -m softlint check-staged
+python -m guardrail_drift_detector check-staged
 exit $?
 """
 
@@ -59,9 +59,9 @@ def _run_git(args: list[str]) -> str:
 
 def _print_violations(violations, source: str) -> None:
     if not violations:
-        print(f"softlint: {source} - no constraint-softening detected. Clean.")
+        print(f"guardrail-drift-detector: {source} - no constraint-softening detected. Clean.")
         return
-    print(f"softlint: {source} - {len(violations)} constraint-softening violation(s) found:\n")
+    print(f"guardrail-drift-detector: {source} - {len(violations)} constraint-softening violation(s) found:\n")
     for v in violations:
         print(v.format())
         print()
@@ -80,7 +80,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     try:
         old_text = _run_git(["show", f"HEAD:{path}"])
     except RuntimeError as e:
-        print(f"softlint: could not read HEAD version of {path}: {e}", file=sys.stderr)
+        print(f"guardrail-drift-detector: could not read HEAD version of {path}: {e}", file=sys.stderr)
         return 2
 
     if args.staged:
@@ -102,7 +102,7 @@ def cmd_check_staged(args: argparse.Namespace) -> int:
             ).splitlines() if line.strip()
         ]
     except RuntimeError as e:
-        print(f"softlint: {e}", file=sys.stderr)
+        print(f"guardrail-drift-detector: {e}", file=sys.stderr)
         return 2
 
     matched = [
@@ -111,7 +111,7 @@ def cmd_check_staged(args: argparse.Namespace) -> int:
     ]
 
     if not matched:
-        print("softlint: no staged CLAUDE.md / AGENTS.md / SKILL.md changes to check.")
+        print("guardrail-drift-detector: no staged CLAUDE.md / AGENTS.md / SKILL.md changes to check.")
         return 0
 
     exit_code = 0
@@ -126,7 +126,7 @@ def cmd_install_hook(args: argparse.Namespace) -> int:
     try:
         git_dir = _run_git(["rev-parse", "--git-dir"]).strip()
     except RuntimeError as e:
-        print(f"softlint: not inside a git repo: {e}", file=sys.stderr)
+        print(f"guardrail-drift-detector: not inside a git repo: {e}", file=sys.stderr)
         return 2
 
     hooks_dir = Path(git_dir) / "hooks"
@@ -135,19 +135,19 @@ def cmd_install_hook(args: argparse.Namespace) -> int:
 
     if hook_path.exists() and not args.force:
         print(
-            f"softlint: {hook_path} already exists. Re-run with --force to overwrite.",
+            f"guardrail-drift-detector: {hook_path} already exists. Re-run with --force to overwrite.",
             file=sys.stderr,
         )
         return 2
 
     hook_path.write_text(PRE_COMMIT_HOOK, encoding="utf-8", newline="\n")
     hook_path.chmod(0o755)
-    print(f"softlint: installed pre-commit hook at {hook_path}")
+    print(f"guardrail-drift-detector: installed pre-commit hook at {hook_path}")
     return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="softlint", description=__doc__)
+    parser = argparse.ArgumentParser(prog="guardrail-drift-detector", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_diff = sub.add_parser("diff", help="Compare two files directly (no git needed)")

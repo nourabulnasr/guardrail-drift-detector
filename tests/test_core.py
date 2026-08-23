@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from softlint.core import find_softenings
+from guardrail_drift_detector.core import find_softenings
 
 
 class TestFindSoftenings(unittest.TestCase):

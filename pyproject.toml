@@ -1,15 +1,15 @@
 [project]
-name = "softlint"
+name = "guardrail-drift-detector"
 version = "0.1.0"
-description = "Constraint-softening lexical linter for agent rule files (CLAUDE.md / AGENTS.md / SKILL.md)"
+description = "AI-safety linter that catches guardrail drift — silent constraint-softening edits in agent rule files (CLAUDE.md / AGENTS.md / SKILL.md)"
 requires-python = ">=3.9"
 
 [project.scripts]
-softlint = "softlint.cli:main"
+guardrail-drift-detector = "guardrail_drift_detector.cli:main"
 
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["softlint"]
+packages = ["guardrail_drift_detector"]

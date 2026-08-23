@@ -1,4 +1,5 @@
-"""softlint — a constraint-softening lexical linter for agent rule files.
+"""guardrail-drift-detector — an AI-safety linter that catches guardrail
+drift in agent rule files.
 
 Detects when a strict constraint word in a SKILL.md / CLAUDE.md / AGENTS.md
 style file has been silently rewritten into a softer, hedged version
