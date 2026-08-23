@@ -23,7 +23,7 @@ same spot.
 ## Companion to contradiction-checkpoint
 
 This is one half of a pair of narrow, deterministic AI-safety guardrails.
-[contradiction-checkpoint](../contradiction-checkpoint) catches contradictions
+[contradiction-checkpoint](https://github.com/nourabulnasr/contradiction-checkpoint) catches contradictions
 **in the moment** — it re-checks the last few turns immediately before an
 irreversible tool call executes, asking "does anything said since the plan
 was formed contradict this specific action?"
